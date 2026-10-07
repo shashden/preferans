@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0f3d2e">
+<title>Пуля · Ленинградка</title>
+<style>
+:root{--felt:#0f3d2e;--felt2:#145a3f;--gold:#d4af37;--cream:#f7f1e1;--ink:#1d1a14;--muted:#7a7265;--red:#b3261e;--line:#e2d9c3;}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:radial-gradient(ellipse at top,var(--felt2),var(--felt) 70%);color:var(--ink);min-height:100vh;padding-bottom:110px}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;margin:0}
+header{padding:18px 16px 8px;color:var(--cream);text-align:center}
+header h1{font-size:26px;letter-spacing:.5px}
+header h1 span{color:var(--gold)}
+header .sub{font-size:12px;opacity:.75;margin-top:4px}
+.wrap{padding:0 12px;max-width:560px;margin:0 auto}
+.card{background:var(--cream);border-radius:16px;padding:14px;margin:10px 0;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.card h2{font-size:17px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.card h2 small{font-family:inherit;font-weight:normal;font-size:12px;color:var(--muted)}
+.players{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pl{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 8px;text-align:center}
+.pl .nm{font-weight:600;font-size:14px;border:none;background:transparent;text-align:center;width:100%;font-family:Georgia,serif;color:var(--felt);padding:0}
+.pl .big{font-size:28px;font-weight:700;margin:4px 0 0;font-family:Georgia,serif}
+.pl .lbl{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted)}
+.pl .row{display:flex;justify-content:space-between;font-size:12px;margin-top:6px;padding-top:6px;border-top:1px dashed var(--line)}
+.pl .row b{color:var(--red)}
+.bar{height:8px;background:#e9e2cf;border-radius:4px;overflow:hidden;margin-top:10px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--felt2),var(--gold));transition:width .4s}
+.meta{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px}
+.meta input{width:48px;border:1px solid var(--line);border-radius:6px;padding:2px 4px;font-size:12px;text-align:center}
+table.w{width:100%;border-collapse:collapse;font-size:13px}
+table.w th,table.w td{padding:6px 4px;text-align:center;border-bottom:1px solid var(--line)}
+table.w th{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase}
+table.w td:first-child,table.w th:first-child{text-align:left}
+.hist{list-style:none;margin:0;padding:0}
+.hist li{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px;align-items:center}
+.hist li:last-child{border:none}
+.hist .n{width:26px;height:26px;border-radius:50%;background:var(--felt);color:var(--cream);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.hist .d{flex:1}
+.hist .d small{display:block;color:var(--muted);font-size:11px}
+.hist .x{border:none;background:transparent;color:var(--muted);font-size:18px;padding:4px 8px}
+.fab{position:fixed;left:0;right:0;bottom:0;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(transparent,rgba(0,0,0,.45));display:flex;gap:10px;max-width:560px;margin:0 auto}
+.btn{flex:1;border:none;border-radius:14px;padding:15px;font-size:16px;font-weight:600;cursor:pointer}
+.btn.p{background:var(--gold);color:#2b2000;box-shadow:0 6px 18px rgba(212,175,55,.4)}
+.btn.s{background:rgba(255,255,255,.14);color:var(--cream);border:1px solid rgba(255,255,255,.3);flex:0 0 auto;padding:15px 16px}
+.sheet{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:flex-end;z-index:10}
+.sheet.on{display:flex}
+.sheet .in{background:var(--cream);width:100%;max-width:560px;margin:0 auto;border-radius:20px 20px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom));max-height:92vh;overflow:auto}
+.sheet h3{font-size:18px;margin-bottom:12px}
+.seg{display:flex;background:#e9e2cf;border-radius:10px;padding:3px;margin:6px 0 12px}
+.seg button{flex:1;border:none;background:transparent;padding:9px 4px;border-radius:8px;font-size:13px;font-weight:600;color:var(--muted)}
+.seg button.on{background:#fff;color:var(--felt);box-shadow:0 1px 4px rgba(0,0,0,.15)}
+label.f{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-top:10px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.chips button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 13px;font-size:14px;font-weight:600;color:var(--ink)}
+.chips button.on{background:var(--felt);color:var(--cream);border-color:var(--felt)}
+.def{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;margin-top:8px}
+.def .t{font-weight:600;font-size:14px;margin-bottom:4px}
+.def .seg{margin:4px 0 6px}
+.num{display:flex;align-items:center;gap:8px}
+.num button{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:#fff;font-size:20px;line-height:1}
+.num span{min-width:28px;text-align:center;font-size:20px;font-weight:700;font-family:Georgia,serif}
+.prev{background:#fff;border:1px dashed var(--gold);border-radius:12px;padding:10px;margin-top:12px;font-size:13px;line-height:1.5}
+.err{color:var(--red);font-size:13px;margin-top:6px}
+.acts{display:flex;gap:10px;margin-top:14px}
+.acts .btn.g{background:var(--felt);color:var(--cream)}
+.acts .btn.c{background:#e9e2cf;color:var(--ink);flex:0 0 auto}
+.fin{font-size:13px;color:var(--muted);margin-top:8px;line-height:1.5}
+.pos{color:#1b6b3a;font-weight:700}.neg{color:var(--red);font-weight:700}
+.chk{display:flex;align-items:center;gap:8px;font-size:13px;margin-top:10px}
+.suits{color:var(--gold);letter-spacing:4px;font-size:14px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Пуля <span>·</span> Ленинградка</h1>
+  <div class="sub">три игрока · гора и висты удвоены · <span class="suits">♠♣♦♥</span></div>
+</header>
+<div class="wrap">
+
+<div class="card">
+  <h2>Табло <small>нажмите на имя, чтобы изменить</small></h2>
+  <div class="players" id="board"></div>
+  <div class="bar"><i id="bar"></i></div>
+  <div class="meta"><span>Сумма пуль: <b id="sumP">0</b> из <b id="needP">60</b></span><span>Пуля до <input type="number" id="limit" min="5" max="100" value="20"></span></div>
+</div>
+
+<div class="card">
+  <h2>Висты <small>строка пишет на столбец</small></h2>
+  <table class="w" id="wt"></table>
+</div>
+
+<div class="card">
+  <h2>Расчёт <small>в вистах, по средней горе</small></h2>
+  <table class="w" id="ft"></table>
+  <div class="fin" id="finNote"></div>
+</div>
+
+<div class="card">
+  <h2>Сдачи <small id="cnt"></small></h2>
+  <ul class="hist" id="hist"></ul>
+</div>
+
+</div>
+
+<div class="fab">
+  <button class="btn s" onclick="shareText()">⇪</button>
+  <button class="btn p" onclick="openSheet()">+ Записать сдачу</button>
+  <button class="btn s" onclick="resetAll()">↺</button>
+</div>
+
+<div class="sheet" id="sheet">
+ <div class="in">
+  <h3 id="shT">Новая сдача</h3>
+  <div class="seg" id="typeSeg">
+    <button data-v="game" class="on">Игра</button>
+    <button data-v="mizer">Мизер</button>
+    <button data-v="ras">Распасы</button>
+  </div>
+  <div id="fGame">
+    <label class="f">Играющий</label><div class="chips" id="decl"></div>
+    <label class="f" id="ctLbl">Контракт</label><div class="chips" id="ct"></div>
+    <label class="f">Взяток у играющего</label><div class="num" id="dT"></div>
+    <div id="defs"></div>
+  </div>
+  <div id="fRas" style="display:none">
+    <div id="rasRows"></div>
+    <div class="chk"><input type="checkbox" id="rasPool" checked><label for="rasPool">За 0 взяток — стоимость взятки в пулю</label></div>
+  </div>
+  <div class="prev" id="prev"></div>
+  <div class="err" id="err"></div>
+  <div class="acts">
+    <button class="btn c" onclick="closeSheet()">Отмена</button>
+    <button class="btn g" id="saveBtn" onclick="saveDeal()">Записать</button>
+  </div>
+ </div>
+</div>
+
+<script>
+const COST={6:2,7:4,8:6,9:8,10:10};
+const REQ={6:4,7:2,8:1,9:1,10:1};
+const RAS=[2,4,6];
+let S=load()||{names:['Игрок 1','Игрок 2','Игрок 3'],limit:20,deals:[]};
+let F=null;
+
+function load(){try{return JSON.parse(localStorage.getItem('pref_len'))}catch(e){return null}}
+function save(){localStorage.setItem('pref_len',JSON.stringify(S))}
+function zero(){return {pool:[0,0,0],mount:[0,0,0],w:[[0,0,0],[0,0,0],[0,0,0]]}}
+function add(a,b){for(let i=0;i<3;i++){a.pool[i]+=b.pool[i];a.mount[i]+=b.mount[i];for(let j=0;j<3;j++)a.w[i][j]+=b.w[i][j]}return a}
+
+function rasLevel(idx){let k=0;for(let i=idx-1;i>=0&&S.deals[i].type==='ras';i--)k++;return Math.min(k,2)}
+
+function score(d,idx){
+  const r=zero();const n=S.names;let txt='';
+  if(d.type==='ras'){
+    const lv=rasLevel(idx),c=RAS[lv];
+    d.ras.forEach((t,i)=>{r.mount[i]+=c*t;if(t===0&&d.rasPool)r.pool[i]+=c});
+    txt=`Распасы по ${c}: `+d.ras.map((t,i)=>`${n[i]} ${t}`).join(', ');
+    return {r,txt,title:'Распасы'};
+  }
+  const D=d.decl,others=[0,1,2].filter(i=>i!==D);
+  if(d.type==='mizer'){
+    const t=d.dT;
+    if(t===0){r.pool[D]+=10;txt=`${n[D]}: мизер сыгран, 10 в пулю`}
+    else{r.mount[D]+=20*t;others.forEach(o=>r.w[o][D]+=20*t);txt=`${n[D]}: мизер, ${t} взят. — ${20*t} в гору, по ${20*t} вистов`}
+    return {r,txt,title:'Мизер · '+n[D]};
+  }
+  const c=COST[d.ct],under=Math.max(0,d.ct-d.dT),defTr=10-d.dT;
+  const modes=others.map(o=>d.def[o].mode);
+  const wh=others.filter(o=>d.def[o].mode==='whist');
+  const half=others.find(o=>d.def[o].mode==='half');
+  let parts=[];
+  if(wh.length===0){
+    r.pool[D]+=c;parts.push(`${n[D]} +${c} в пулю (без розыгрыша)`);
+    if(half!==undefined){const v=Math.max(1,Math.floor(REQ[d.ct]/2))*2*c;r.w[half][D]+=v;parts.push(`${n[half]} полвиста: ${v} вистов`)}
+    return {r,txt:parts.join('; '),title:`${d.ct} · ${n[D]}`};
+  }
+  if(under===0){r.pool[D]+=c;parts.push(`${n[D]} +${c} в пулю`)}
+  else{r.mount[D]+=2*c*under;parts.push(`${n[D]} подсад ${under}: ${2*c*under} в гору`)}
+  if(wh.length===1){
+    const W=wh[0],P=others.find(o=>o!==W);
+    const vis=2*c*defTr+2*c*under;
+    r.w[W][D]+=vis/2;r.w[P][D]+=vis/2;
+    parts.push(`висты пополам по ${vis/2} (${defTr} взят.${under?` + консоляция`:''})`);
+    const need=REQ[d.ct],short=Math.max(0,need-defTr);
+    if(short>0){r.mount[W]+=c*short;parts.push(`${n[W]} недобор на висте ${short}: ${c*short} в гору`)}
+  }else{
+    const need=REQ[d.ct],each=need>=2?need/2:0;
+    wh.forEach(W=>{
+      const t=d.def[W].tricks;
+      r.w[W][D]+=2*c*t+2*c*under;
+      parts.push(`${n[W]} ${2*c*t+2*c*under} вистов`);
+    });
+    if(each){wh.forEach(W=>{const sh=Math.max(0,each-d.def[W].tricks);if(sh>0){r.mount[W]+=c*sh;parts.push(`${n[W]} недобор ${sh}: ${c*sh} в гору`)}})}
+    else{if(defTr<need){wh.forEach(W=>{r.mount[W]+=c*(need-defTr)/wh.length;parts.push(`${n[W]} недобор: ${c*(need-defTr)/wh.length} в гору`)})}}
+  }
+  return {r,txt:parts.join('; '),title:`${d.ct} · ${n[D]} · ${d.dT} взят.`};
+}
+
+function totals(){const t=zero();S.deals.forEach((d,i)=>add(t,score(d,i).r));return t}
+
+function calc(t){
+  const avgP=(t.pool[0]+t.pool[1]+t.pool[2])/3;
+  const m=t.mount.map((v,i)=>v-2*(t.pool[i]-avgP));
+  const avgM=(m[0]+m[1]+m[2])/3;
+  return [0,1,2].map(i=>{
+    const mv=(avgM-m[i])*10;
+    let wn=0;for(let j=0;j<3;j++)wn+=t.w[i][j]-t.w[j][i];
+    return {m:m[i],mv,wn,total:mv+wn};
+  });
+}
+
+function fmt(x){const v=Math.round(x*10)/10;return (v>0?'+':'')+v}
+
+function render(){
+  const t=totals(),n=S.names;
+  document.getElementById('limit').value=S.limit;
+  document.getElementById('board').innerHTML=n.map((nm,i)=>`<div class="pl">
+    <input class="nm" value="${nm}" onchange="S.names[${i}]=this.value||'Игрок ${i+1}';save();render()">
+    <div class="lbl">пуля</div><div class="big">${t.pool[i]}</div>
+    <div class="row"><span>гора</span><b>${t.mount[i]}</b></div>
+  </div>`).join('');
+  const sum=t.pool[0]+t.pool[1]+t.pool[2],need=S.limit*3;
+  document.getElementById('sumP').textContent=sum;document.getElementById('needP').textContent=need;
+  document.getElementById('bar').style.width=Math.min(100,sum/need*100)+'%';
+  document.getElementById('wt').innerHTML=`<tr><th></th>${n.map(x=>`<th>на ${x}</th>`).join('')}</tr>`+
+    n.map((x,i)=>`<tr><td>${x}</td>${[0,1,2].map(j=>`<td>${i===j?'—':t.w[i][j]}</td>`).join('')}</tr>`).join('');
+  const c=calc(t);
+  document.getElementById('ft').innerHTML=`<tr><th>Игрок</th><th>Гора*</th><th>За гору</th><th>Висты</th><th>Итог</th></tr>`+
+    n.map((x,i)=>`<tr><td>${x}</td><td>${Math.round(c[i].m*10)/10}</td><td>${fmt(c[i].mv)}</td><td>${fmt(c[i].wn)}</td><td class="${c[i].total>=0?'pos':'neg'}">${fmt(c[i].total)}</td></tr>`).join('');
+  document.getElementById('finNote').innerHTML=`*Гора после переноса пули: недоигранное до средней пули — в гору вдвойне, переигранное — списывается вдвойне. Очко горы = 10 вистов.${sum>=need?' <b style="color:#1b6b3a">Пуля закрыта — можно рассчитываться.</b>':''}`;
+  document.getElementById('cnt').textContent=S.deals.length?`${S.deals.length} сдач`:'пока пусто';
+  document.getElementById('hist').innerHTML=S.deals.map((d,i)=>{const s=score(d,i);return `<li><div class="n">${i+1}</div><div class="d">${s.title}<small>${s.txt}</small></div>${i===S.deals.length-1?`<button class="x" onclick="delLast()">✕</button>`:''}</li>`}).reverse().join('')||'<li style="color:var(--muted)">Нажмите «Записать сдачу»</li>';
+}
+
+document.getElementById('limit').addEventListener('change',e=>{S.limit=+e.target.value||20;save();render()});
+function delLast(){if(confirm('Удалить последнюю сдачу?')){S.deals.pop();save();render()}}
+function resetAll(){if(confirm('Начать новую пулю? Все записи будут стёрты.')){S.deals=[];save();render()}}
+
+function openSheet(){F={type:'game',decl:0,ct:6,dT:6,def:{},ras:[0,0,0],rasPool:true};[0,1,2].forEach(i=>F.def[i]={mode:'whist',tricks:0});document.getElementById('sheet').classList.add('on');drawForm()}
+function closeSheet(){document.getElementById('sheet').classList.remove('on')}
+
+document.getElementById('typeSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;F.type=b.dataset.v;if(F.type==='mizer')F.dT=0;if(F.type==='game')F.dT=F.ct;drawForm()});
+
+function chips(id,items,cur,cb){document.getElementById(id).innerHTML=items.map(it=>`<button class="${it.v===cur?'on':''}" data-v="${it.v}">${it.l}</button>`).join('');document.getElementById(id).onclick=e=>{const b=e.target.closest('button');if(b){cb(b.dataset.v);drawForm()}}}
+function num(el,val,min,max,cb){el.innerHTML=`<button>−</button><span>${val}</span><button>+</button>`;const bs=el.querySelectorAll('button');bs[0].onclick=()=>{if(val>min){cb(val-1);drawForm()}};bs[1].onclick=()=>{if(val<max){cb(val+1);drawForm()}}}
+
+function drawForm(){
+  const n=S.names;
+  document.querySelectorAll('#typeSeg button').forEach(b=>b.classList.toggle('on',b.dataset.v===F.type));
+  document.getElementById('fGame').style.display=F.type==='ras'?'none':'';
+  document.getElementById('fRas').style.display=F.type==='ras'?'':'none';
+  if(F.type==='ras'){
+    const lv=rasLevel(S.deals.length);
+    document.getElementById('rasRows').innerHTML=`<label class="f">Взятки на распасах (по ${RAS[lv]} за взятку)</label>`+n.map((x,i)=>`<div class="def"><div class="t">${x}</div><div class="num" id="ras${i}"></div></div>`).join('');
+    n.forEach((x,i)=>num(document.getElementById('ras'+i),F.ras[i],0,10,v=>F.ras[i]=v));
+    F.rasPool=document.getElementById('rasPool').checked;
+    document.getElementById('rasPool').onchange=e=>{F.rasPool=e.target.checked;drawForm()};
+  }else{
+    chips('decl',n.map((x,i)=>({v:i,l:x})),F.decl,v=>F.decl=+v);
+    const ctEl=document.getElementById('ct'),ctL=document.getElementById('ctLbl');
+    if(F.type==='mizer'){ctL.style.display='none';ctEl.style.display='none'}
+    else{ctL.style.display='';ctEl.style.display='';chips('ct',[6,7,8,9,10].map(v=>({v,l:v})),F.ct,v=>{F.ct=+v;F.dT=F.ct})}
+    num(document.getElementById('dT'),F.dT,0,10,v=>F.dT=v);
+    const others=[0,1,2].filter(i=>i!==F.decl);
+    if(F.type==='mizer'){document.getElementById('defs').innerHTML=''}
+    else{
+      document.getElementById('defs').innerHTML=others.map(o=>{const m=F.def[o].mode;return `<div class="def"><div class="t">${n[o]}</div>
+        <div class="seg" data-o="${o}"><button data-v="whist" class="${m==='whist'?'on':''}">Вист</button><button data-v="pass" class="${m==='pass'?'on':''}">Пас</button>${F.ct<=7?`<button data-v="half" class="${m==='half'?'on':''}">Полвиста</button>`:''}</div>
+        ${(m==='whist'&&others.every(x=>F.def[x].mode==='whist'))?`<label class="f">Взяток</label><div class="num" id="wt${o}"></div>`:''}</div>`}).join('');
+      others.forEach(o=>{const el=document.getElementById('wt'+o);if(el)num(el,F.def[o].tricks,0,10,v=>F.def[o].tricks=v);
+        document.querySelector(`.seg[data-o="${o}"]`).onclick=e=>{const b=e.target.closest('button');if(!b)return;F.def[o].mode=b.dataset.v;if(b.dataset.v==='half'){const p=others.find(x=>x!==o);F.def[p].mode='pass'}drawForm()}});
+    }
+  }
+  const v=validate();
+  document.getElementById('err').textContent=v||'';
+  document.getElementById('saveBtn').disabled=!!v;
+  if(!v){const s=score(deal(),S.deals.length);document.getElementById('prev').innerHTML='<b>Запись:</b> '+s.txt}else document.getElementById('prev').innerHTML='';
+}
+function deal(){const d={type:F.type};if(F.type==='ras'){d.ras=[...F.ras];d.rasPool=F.rasPool;return d}d.decl=F.decl;d.dT=F.dT;if(F.type==='game'){d.ct=F.ct;d.def={};for(const k in F.def)d.def[k]={...F.def[k]}}return d}
+function validate(){
+  if(F.type==='ras'){return F.ras.reduce((a,b)=>a+b,0)===10?'':'Сумма взяток на распасах должна быть 10'}
+  if(F.type==='mizer')return '';
+  const others=[0,1,2].filter(i=>i!==F.decl);
+  if(others.every(o=>F.def[o].mode==='whist')){const s=others.reduce((a,o)=>a+F.def[o].tricks,0);if(s+F.dT!==10)return `Взятки вистующих (${s}) + играющего (${F.dT}) должны дать 10`}
+  if(others.filter(o=>F.def[o].mode==='half').length>1)return 'Полвиста может сказать только один';
+  return '';
+}
+function saveDeal(){if(validate())return;S.deals.push(deal());save();closeSheet();render();window.scrollTo({top:0,behavior:'smooth'})}
+
+function shareText(){
+  const t=totals(),c=calc(t),n=S.names;
+  let s=`Пуля (Ленинградка до ${S.limit}), ${S.deals.length} сдач\n`;
+  n.forEach((x,i)=>s+=`${x}: пуля ${t.pool[i]}, гора ${t.mount[i]}, итог ${fmt(c[i].total)} вистов\n`);
+  if(navigator.share)navigator.share({text:s}).catch(()=>{});else{navigator.clipboard.writeText(s);alert('Скопировано:\n'+s)}
+}
+render();
+</script>
+</body>
+</html>
